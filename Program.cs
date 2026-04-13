@@ -34,6 +34,13 @@ internal class Program
 
         try
         {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("============================================================");
+            Console.WriteLine("           MAF + OPENROUTER INTERACTIVE CHAT                ");
+            Console.WriteLine("============================================================");
+            Console.ResetColor();
+
             Console.WriteLine("\n=== Chat Interativo Iniciado (Digite 'sair' para encerrar) ===");
             
             // Memória da Conversa (Histórico)
