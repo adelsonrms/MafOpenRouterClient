@@ -9,9 +9,25 @@ Este repositório demonstra como integrar o **Microsoft Agent Framework (MAF)** 
 - **Streaming**: Respostas em tempo real conforme são geradas pelo modelo.
 - **Factory Flexível**: Arquitetura desacoplada para gerenciar clients e configurações.
 
-## 🛠️ Pré-requisitos
-- .NET 8, 9 ou 10.
-- Uma chave de API do [OpenRouter](https://openrouter.ai/) ou [OpenAI](https://openai.com/).
+## 🛠️ Pré-requisitos e Dependências
+- **Runtime**: .NET 8.0, 9.0 ou 10.0.
+- **API Key**: Uma chave válida do [OpenRouter](https://openrouter.ai/) ou [OpenAI](https://openai.com/).
+
+### Pacotes NuGet Necessários:
+Para reproduzir este projeto, você precisará instalar os seguintes pacotes via CLI:
+
+```bash
+# Core do Microsoft Agent Framework (MAF)
+dotnet add package Microsoft.Agents.AI.OpenAI --version 1.0.0-preview.*
+
+# Abstrações oficiais de IA da Microsoft e Integração OpenAI
+dotnet add package Microsoft.Extensions.AI
+dotnet add package Microsoft.Extensions.AI.OpenAI --version 10.*-preview.*
+
+# Infraestrutura de Configuração
+dotnet add package Microsoft.Extensions.Configuration.Json
+dotnet add package Microsoft.Extensions.Configuration.Binder
+```
 
 ## 📖 Guia de Implementação
 
