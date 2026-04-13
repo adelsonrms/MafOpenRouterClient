@@ -34,6 +34,9 @@ dotnet add package Microsoft.Extensions.Configuration.Binder
 ### 1. Configurando o Agente
 A base da implementação utiliza as classes `OpenAIClient` e a extensão `AsIChatClient()`.
 
+> [!TIP]
+> **O Pulo do Gato**: Como o OpenRouter segue o padrão da OpenAI, para fazê-lo funcionar basta sobrescrever o `Endpoint` nas opções do Client. Isso torna o seu Agente compatível com qualquer provedor que suporte esse protocolo!
+
 ```csharp
 // Configuração de opções com endpoint customizado para OpenRouter
 var options = new OpenAIClientOptions { 
