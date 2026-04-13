@@ -68,15 +68,24 @@ history.Add(new ChatMessage(ChatRole.Assistant, respostaCompleta));
 ```
 
 ### 3. Processando Respostas em Streaming
-Utilize o `RunStreamingAsync` para uma experiência de UI muito melhor no console.
+Utilize o `RunStreamingAsync` para uma experiência de UI muito melhor no console. O exemplo abaixo mostra como exibir o nome do agente apenas quando a resposta começa a chegar e como usar cores.
 
 ```csharp
 var sb = new StringBuilder();
+bool isFirstChunk = true;
 
 await foreach (var update in agent.RunStreamingAsync(history))
 {
     if (update.Text != null)
     {
+        if (isFirstChunk)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("🤖 Agente: ");
+            Console.ResetColor();
+            isFirstChunk = false;
+        }
+
         Console.Write(update.Text);
         sb.Append(update.Text);
     }

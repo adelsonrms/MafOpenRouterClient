@@ -1,7 +1,11 @@
+using Microsoft.Agents.AI;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Threading.Tasks;
-using MafOpenRouterClient;
+using OpenAI;
+using System.ClientModel;
+
+namespace MafOpenRouterClient;
+
 
 internal class Program
 {
@@ -35,7 +39,9 @@ internal class Program
 
             while (true)
             {
-                Console.Write("\nVocê: ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write("\n👤 Você: ");
+                Console.ResetColor();
 
                 // Lê a pergunta do usuário
                 var input = Console.ReadLine();
@@ -46,17 +52,22 @@ internal class Program
                 // Adiciona o request do user na memória
                 history.Add(new Microsoft.Extensions.AI.ChatMessage(Microsoft.Extensions.AI.ChatRole.User, input));
 
-                Console.Write("Agente: ");
-                
                 var sb = new System.Text.StringBuilder();
+                bool isFirstChunk = true;
 
-
-                //Em um foreach assíncrono, processa os updates do agente e exibe a resposta em tempo real
-                // O método RunStreamingAsync retorna um IAsyncEnumerable<ChatUpdate>, onde cada ChatUpdate contém um fragmento da resposta do agente.
+                // Em um foreach assíncrono, processa os updates do agente e exibe a resposta em tempo real
                 await foreach (var update in agent.RunStreamingAsync(history))
                 {
                     if (update.Text != null)
                     {
+                        if (isFirstChunk)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write("🤖 Agente: ");
+                            Console.ResetColor();
+                            isFirstChunk = false;
+                        }
+
                         Console.Write(update.Text);
                         sb.Append(update.Text);
                     }
@@ -72,5 +83,52 @@ internal class Program
             Console.WriteLine($"\n[ERROR] Ocorreu uma exceção: {ex.Message}");
             Console.WriteLine(ex.StackTrace);
         }
+    }
+}
+
+
+public class AiSettings
+{
+    public string ActiveProvider { get; set; } = "OpenRouter";
+    public bool EnableLogging { get; set; } = true;
+    public string SystemPrompt { get; set; } = "Responda de forma direta e objetiva.";
+    public Dictionary<string, AiProviderConfig> Providers { get; set; } = new();
+}
+
+public class AiProviderConfig
+{
+    public string BaseUrl { get; set; }
+    public string ApiKey { get; set; }
+    public string ModelId { get; set; }
+    public string CustomTitle { get; set; }
+    public bool RequiresCustomHeaders { get; set; }
+}
+
+public static class AiClientFactory
+{
+    public static IChatClient CreateChatClient(AiSettings settings)
+    {
+        if (settings == null) throw new ArgumentNullException(nameof(settings));
+        if (string.IsNullOrWhiteSpace(settings.ActiveProvider)) throw new ArgumentException("ActiveProvider is not set.");
+        if (!settings.Providers.TryGetValue(settings.ActiveProvider, out var providerConfig))
+        {
+            throw new ArgumentException($"Provider '{settings.ActiveProvider}' not found in configuration.");
+        }
+
+        var options = new OpenAIClientOptions();
+
+        if (!string.IsNullOrWhiteSpace(providerConfig.BaseUrl))
+        {
+            options.Endpoint = new Uri(providerConfig.BaseUrl);
+        }
+
+        var client = new OpenAIClient(new ApiKeyCredential(providerConfig.ApiKey), options);
+        return client.GetChatClient(providerConfig.ModelId).AsIChatClient();
+    }
+
+    public static AIAgent CreateAgent(AiSettings settings)
+    {
+        var chatClient = CreateChatClient(settings);
+        return chatClient.CreateAIAgent(settings.SystemPrompt);
     }
 }
