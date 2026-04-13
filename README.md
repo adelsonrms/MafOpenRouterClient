@@ -89,5 +89,12 @@ history.Add(new ChatMessage(ChatRole.Assistant, sb.ToString()));
 3. Insira sua chave de API no campo `ApiKey`.
 4. Execute com `dotnet run`.
 
+## 📚 Referências e Agradecimentos
+Este projeto foi inspirado e serviu como uma evolução baseada no excelente artigo do **Balta.io**: 
+- [Criando seu primeiro Agente de IA com MAF](https://blog.balta.io/criando-seu-primeiro-agente-de-ia/)
+
+**Contribuição desta versão**: 
+Adaptação da implementação original (feita para OpenAI) para o **OpenRouter**, permitindo o uso de modelos gratuitos e a flexibilidade de transitar entre diferentes LLMs (Anthropic, Gemini, Qwen, etc) mantendo a mesma base de código.
+
 ---
 Desenvolvido para fins didáticos explorando o ecossistema de Agents no .NET. 🚀
