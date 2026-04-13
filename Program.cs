@@ -25,7 +25,9 @@ internal class Program
             return;
         }
 
-        Console.WriteLine($"[INFO] Inicializando usando o provedor ativo: {settings.ActiveProvider}");
+        Console.WriteLine($"Qual ser nome ?");
+        var nome = Console.ReadLine();
+        var agentName = $"[{settings.ActiveProvider ?? "OpenAi"}] {settings.Providers[settings.ActiveProvider ?? "OpenAi"].ModelId}";
 
         // 2. Inicializar o Agente via a fábrica reutilizável
         var agent = AiClientFactory.CreateAgent(settings);
@@ -35,12 +37,12 @@ internal class Program
             Console.WriteLine("\n=== Chat Interativo Iniciado (Digite 'sair' para encerrar) ===");
             
             // Memória da Conversa (Histórico)
-            var history = new System.Collections.Generic.List<Microsoft.Extensions.AI.ChatMessage>();
+            var history = new List<ChatMessage>();
 
             while (true)
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.Write("\n👤 Você: ");
+                Console.WriteLine($"\n[{nome}]");
                 Console.ResetColor();
 
                 // Lê a pergunta do usuário
@@ -63,7 +65,7 @@ internal class Program
                         if (isFirstChunk)
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("🤖 Agente: ");
+                            Console.WriteLine($"[{agentName}]");
                             Console.ResetColor();
                             isFirstChunk = false;
                         }
