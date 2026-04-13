@@ -1,0 +1,18 @@
+# Rules for Terminal Commands
+
+- **Shell Standard**: ALWAYS use **Windows PowerShell**. NEVER use Unix/Bash commands (e.g., avoid `ls`, `grep`, `cat`, `rm -rf`, `cp -r`).
+- **PowerShell Commands**:
+  - Instead of `ls`, use `Get-ChildItem` (or `dir`).
+  - Instead of `grep`, use `Select-String`.
+  - Instead of `cat`, use `Get-Content` (or `type`).
+  - Instead of `curl`, use `Invoke-RestMethod` (for APIs) or `Invoke-WebRequest`. Do NOT use the `curl` alias if you need specific flags like `-X` or `-H` (use `-Method` and `-Headers`).
+  - Instead of `wget`, use `Invoke-WebRequest`.
+  - Instead of `ssh`, use `ssh.exe` (native Windows).
+  - Instead of `ping`, use `Test-Connection` or `ping.exe`.
+  - Instead of `netstat`, use `Get-NetTCPConnection` or `netstat.exe`.
+  - Instead of `ifconfig`, use `ipconfig`.
+  - Instead of `find`, use `Get-ChildItem -Recurse | Where-Object { $_.Name -like "*pattern*" }`.
+- **Safe Execution (Automation)**:
+  - For commands that only **read** (ls, cat, ping, etc.), ALWAYS set `SafeToAutoRun: true`.
+  - During **Agent Mode**, for **file edits** (writing/replacing content), the agent should assume "auto-approval" intent if the environment allows, and consistently use `SafeToAutoRun: true` in terminal commands associated with these edits.
+- **Path Handling**: Use backslashes `\` for paths or ensure paths are properly quoted when using forward slashes in PowerShell.
