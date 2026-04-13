@@ -31,25 +31,23 @@ dotnet add package Microsoft.Extensions.Configuration.Binder
 
 ## 📖 Guia de Implementação
 
-### 1. Configurando o Agente
-A base da implementação utiliza as classes `OpenAIClient` e a extensão `AsIChatClient()`.
-
-> [!TIP]
-> **O Pulo do Gato**: Como o OpenRouter segue o padrão da OpenAI, para fazê-lo funcionar basta sobrescrever o `Endpoint` nas opções do Client. Isso torna o seu Agente compatível com qualquer provedor que suporte esse protocolo!
+### 1. Configurando o Agente e Header
+A base da implementação utiliza as classes `OpenAIClient` e a extensão `AsIChatClient()`. Agora incluímos um cabeçalho informativo e detecção automática do usuário.
 
 ```csharp
-// Configuração de opções com endpoint customizado para OpenRouter
+// Exibe informações do provedor ativo no início
+Console.WriteLine("     Provider    : " + settings.ActiveProvider);
+Console.WriteLine("     Model       : " + settings.Providers[settings.ActiveProvider].ModelId);
+
+// Detecção automática do nome do usuário do sistema
+var nome = Environment.UserName;
+
+// Configuração do Agente com Endpoint Customizado (O Pulo do Gato)
 var options = new OpenAIClientOptions { 
     Endpoint = new Uri("https://openrouter.ai/api/v1") 
 };
-
-// Adição de Policy para Headers Customizados (X-Title e Auth)
-options.AddPolicy(new AddHeadersPolicy(apiKey, "Meu App MAF"), PipelinePosition.PerCall);
-
 var client = new OpenAIClient(new ApiKeyCredential(apiKey), options);
-
-// Criando o ChatClient e o Agente
-IChatClient chatClient = client.GetChatClient("modelo-escolhido").AsIChatClient();
+IChatClient chatClient = client.GetChatClient(modelId).AsIChatClient();
 AIAgent agent = chatClient.CreateAIAgent("Você é um assistente prestativo.");
 ```
 

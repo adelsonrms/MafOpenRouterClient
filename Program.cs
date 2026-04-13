@@ -25,8 +25,24 @@ internal class Program
             return;
         }
 
-        Console.WriteLine($"Qual ser nome ?");
-        var nome = Console.ReadLine();
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("============================================================");
+        Console.WriteLine("           DEVN.IA - MAF + OPENROUTER                       ");
+        Console.WriteLine("============================================================");
+        Console.WriteLine(" Usando ");
+        Console.WriteLine("------------------------------------------------------------");
+        Console.WriteLine("     Provider    : " + settings.ActiveProvider);
+        Console.WriteLine("     Model       : " + (settings.Providers[settings.ActiveProvider ?? "OpenAi"].ModelId ?? "Modelo Desconhecido"));
+        Console.WriteLine("     BaseUrl     : " +  (settings.Providers[settings.ActiveProvider ?? "OpenAi"].BaseUrl ?? "URL Desconhecida"));
+
+        Console.ResetColor();
+
+        Console.WriteLine("\n=== Chat Interativo Iniciado (Digite 'sair' or CTRL+C para encerrar) ===");
+
+
+        //Console.WriteLine($"Qual ser nome ?");
+        var nome = Environment.UserName;
         var agentName = $"[{settings.ActiveProvider ?? "OpenAi"}] {settings.Providers[settings.ActiveProvider ?? "OpenAi"].ModelId}";
 
         // 2. Inicializar o Agente via a fábrica reutilizável
@@ -34,14 +50,7 @@ internal class Program
 
         try
         {
-            Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("============================================================");
-            Console.WriteLine("           MAF + OPENROUTER INTERACTIVE CHAT                ");
-            Console.WriteLine("============================================================");
-            Console.ResetColor();
 
-            Console.WriteLine("\n=== Chat Interativo Iniciado (Digite 'sair' para encerrar) ===");
             
             // Memória da Conversa (Histórico)
             var history = new List<ChatMessage>();
